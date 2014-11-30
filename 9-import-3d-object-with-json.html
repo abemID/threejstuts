@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>9. Import 3D Object with JSON | Three Js Tutorial</title>
+</head>
+<body>
+	<script src="three.js"></script>
+	<script src="TrackballControls.js"></script>
+	<script src="DDSLoader.js"></script>
+	<script>
+	var control,camera,scene,renderer,width,height,asalogo,degree,loader,logo,asalogo;
+	width=window.innerWidth;
+	height=window.innerHeight;
+	degree=Math.PI/180;	
+
+	start();
+	animate();
+
+	function start(){
+		camera=new THREE.PerspectiveCamera(45,width/height,1,10000);
+		camera.position.set(0,0,600);
+
+		control=new THREE.TrackballControls(camera);
+		control.addEventListener("change",render);
+
+		scene=new THREE.Scene();
+
+		var box=new THREE.Mesh(new THREE.CubeGeometry(100,100,100),new THREE.MeshLambertMaterial({color:"white"}));
+		var ball=new THREE.Mesh(new THREE.SphereGeometry(100,20,20),new THREE.MeshBasicMaterial({color:"red",wireframe:true}));
+		var plane=new THREE.Mesh(new THREE.PlaneGeometry(200,200),new THREE.MeshNormalMaterial({side:THREE.DoubleSide}));
+
+		var light=new THREE.PointLight(0xffffff,1,2000);
+		light.position.set(0,0,100);
+		var light2=new THREE.PointLight(0xffffff,1,1000);
+		light2.position.set(0,0,-100);
+
+		loader=new THREE.JSONLoader();
+		logo=function(object){
+			asalogo=new THREE.Mesh(
+				object,new THREE.MeshLambertMaterial({color:"red",wireframe:false})
+			);
+			asalogo.position.set(0,0,0);
+			asalogo.scale.set(3,3,3);
+			scene.add(asalogo);
+			renderer.render(scene,camera);
+		}
+		loader.load("asalogo.js",logo);
+
+		//scene.add(box);
+		//scene.add(ball);
+		//scene.add(plane);
+		scene.add(light);
+		scene.add(light2);
+
+		renderer=new THREE.WebGLRenderer();
+		renderer.setClearColor(0xffffff);
+		renderer.setSize(width,height);
+		document.body.appendChild(renderer.domElement);
+		renderer.render(scene,camera);
+	}
+
+	function animate(){
+		requestAnimationFrame(animate);
+		control.update();
+	}
+
+	function render(){
+		renderer.render(scene,camera);
+	}
+	</script>
+</body>
+</html>
